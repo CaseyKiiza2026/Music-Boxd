@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MusicBox — Track What You Hear</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ── RESET & VARIABLES ─────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0e0e0f;
+      --surface:   #181819;
+      --border:    #2a2a2c;
+      --accent:    #e8c96d;   /* warm gold */
+      --accent2:   #c0392b;   /* vinyl red  */
+      --text:      #f0ede8;
+      --muted:     #7a7875;
+      --font-head: 'Playfair Display', serif;
+      --font-body: 'DM Sans', sans-serif;
+      --radius:    6px;
+      --max:       1180px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { display: block; width: 100%; }
+
+    /* ── NAV ───────────────────────────────────────────── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(14,14,15,.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .logo {
+      font-family: var(--font-head);
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+
+    .logo span { color: var(--text); }
+
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-search {
+      flex: 1;
+      max-width: 320px;
+      margin-left: auto;
+      position: relative;
+    }
+
+    .nav-search input {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 7px 16px 7px 36px;
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 13px;
+      outline: none;
+    }
+
+    .nav-search input:focus { border-color: var(--accent); }
+
+    .nav-search::before {
+      content: "⌕";
+      position: absolute;
+      left: 13px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 16px;
+      pointer-events: none;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 7px 18px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      font-family: var(--font-body);
+      transition: opacity .15s;
+    }
+
+    .btn:hover { opacity: .85; }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #111;
+    }
+
+    /* ── HERO STRIP ────────────────────────────────────── */
+    .hero {
+      border-bottom: 1px solid var(--border);
+      padding: 56px 24px 48px;
+      text-align: center;
+      background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(232,201,109,.08) 0%, transparent 70%);
+    }
+
+    .hero h1 {
+      font-family: var(--font-head);
+      font-size: clamp(36px, 6vw, 72px);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -2px;
+      max-width: 700px;
+      margin: 0 auto 16px;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 16px;
+      margin-bottom: 28px;
+    }
+
+    .hero-cta { display: flex; gap: 12px; justify-content: center; }
+
+    /* ── SHARED SECTION ────────────────────────────────── */
+    .section {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 56px 24px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 28px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 14px;
+    }
+
+    .section-head h2 {
+      font-family: var(--font-head);
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .section-head a {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    /* ── FEATURED ALBUMS GRID ──────────────────────────── */
+    .albums-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 20px;
+    }
+
+    .album-card {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .album-card:hover .album-overlay { opacity: 1; }
+
+    .album-art {
+      aspect-ratio: 1;
+      background: var(--surface);
+      border-radius: var(--radius);
+      overflow: hidden;
+      position: relative;
+      border: 1px solid var(--border);
+    }
+
+    /* colourful placeholder covers */
+    .album-art.c1 { background: linear-gradient(135deg,#1a1a2e,#16213e,#0f3460); }
+    .album-art.c2 { background: linear-gradient(135deg,#2d1b69,#11022e,#e94560); }
+    .album-art.c3 { background: linear-gradient(135deg,#0a3d62,#1e3799,#6a89cc); }
+    .album-art.c4 { background: linear-gradient(135deg,#1b2631,#78281f,#c0392b); }
+    .album-art.c5 { background: linear-gradient(135deg,#0d2137,#1a6b4a,#27ae60); }
+    .album-art.c6 { background: linear-gradient(135deg,#1c1c1e,#3d3d3d,#bdc3c7); }
+
+    .album-art-label {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      opacity: .25;
+    }
+
+    .vinyl-icon {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      border: 2px solid currentColor;
+      position: relative;
+    }
+
+    .vinyl-icon::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      border: 2px solid currentColor;
+    }
+
+    .album-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,.6);
+      border-radius: var(--radius);
+      opacity: 0;
+      transition: opacity .2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .album-meta { margin-top: 10px; }
+
+    .album-meta .title {
+      font-weight: 500;
+      font-size: 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .album-meta .artist {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .album-meta .stars {
+      font-size: 11px;
+      color: var(--accent);
+      margin-top: 2px;
+    }
+
+    /* ── RECENT REVIEWS ────────────────────────────────── */
+    .reviews-list { display: flex; flex-direction: column; gap: 1px; }
+
+    .review-row {
+      display: grid;
+      grid-template-columns: 52px 1fr;
+      gap: 16px;
+      align-items: start;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 10px;
+    }
+
+    .avatar {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .review-body .reviewer {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .reviewer .name {
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .reviewer .album-tag {
+      font-size: 11px;
+      background: rgba(232,201,109,.12);
+      color: var(--accent);
+      border-radius: 3px;
+      padding: 1px 7px;
+    }
+
+    .reviewer .stars { font-size: 12px; color: var(--accent); }
+    .reviewer .time  { font-size: 11px; color: var(--muted); margin-left: auto; }
+
+    .review-text {
+      font-size: 14px;
+      color: #c0bdb9;
+      line-height: 1.65;
+    }
+
+    /* ── FOOTER ────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 24px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    footer strong { color: var(--accent); }
+  </style>
+</head>
+<body>
+
+  <!-- ╔══════════════════════════════╗ -->
+  <!-- ║  NAVIGATION BAR              ║ -->
+  <!-- ╚══════════════════════════════╝ -->
+  <nav>
+    <div class="nav-inner">
+      <a class="logo" href="index.html">Music<span>Box</span></a>
+
+      <ul class="nav-links">
+        <li><a href="#">Films</a></li>
+        <li><a href="#">Members</a></li>
+        <li><a href="#">Journal</a></li>
+        <li><a href="#">Charts</a></li>
+      </ul>
+
+      <div class="nav-search">
+        <input type="text" placeholder="Search albums, artists…" />
+      </div>
+
+      <a href="login.html" class="btn btn-outline">Sign In</a>
+      <a href="login.html" class="btn btn-primary">Join</a>
+    </div>
+  </nav>
+
+
+  <!-- ╔══════════════════════════════╗ -->
+  <!-- ║  HERO SECTION                ║ -->
+  <!-- ╚══════════════════════════════╝ -->
+  <section class="hero">
+    <h1>Track every album<br>you <em>ever</em> heard.</h1>
+    <p>Log albums. Write reviews. Discover what your friends are listening to.</p>
+    <div class="hero-cta">
+      <a href="login.html" class="btn btn-primary">Get Started — It's Free</a>
+      <a href="album.html" class="btn btn-outline">Browse Albums</a>
+    </div>
+  </section>
+
+
+  <!-- ╔══════════════════════════════╗ -->
+  <!-- ║  FEATURED ALBUMS SECTION     ║ -->
+  <!-- ╚══════════════════════════════╝ -->
+  <div class="section">
+    <div class="section-head">
+      <h2>Featured This Week</h2>
+      <a href="#">See all →</a>
+    </div>
+
+    <div class="albums-grid">
+
+      <!-- Album Card 1 -->
+      <a href="album.html" class="album-card">
+        <div class="album-art c1">
+          <div class="album-art-label">
+            <div class="vinyl-icon"></div>
+          </div>
+          <div class="album-overlay">View Album</div>
+        </div>
+        <div class="album-meta">
+          <div class="title">Blonde</div>
+          <div class="artist">Frank Ocean</div>
+          <div class="stars">★★★★★</div>
+        </div>
+      </a>
+
+      <!-- Album Card 2 -->
+      <a href="album.html" class="album-card">
+        <div class="album-art c2">
+          <div class="album-art-label"><div class="vinyl-icon"></div></div>
+          <div class="album-overlay">View Album</div>
+        </div>
+        <div class="album-meta">
+          <div class="title">To Pimp a Butterfly</div>
+          <div class="artist">Kendrick Lamar</div>
+          <div class="stars">★★★★★</div>
+        </div>
+      </a>
+
+      <!-- Album Card 3 -->
+      <a href="album.html" class="album-card">
+        <div class="album-art c3">
+          <div class="album-art-label"><div class="vinyl-icon"></div></div>
+          <div class="album-overlay">View Album</div>
+        </div>
+        <div class="album-meta">
+          <div class="title">Rumours</div>
+          <div class="artist">Fleetwood Mac</div>
+          <div class="stars">★★★★½</div>
+        </div>
+      </a>
+
+      <!-- Album Card 4 -->
+      <a href="album.html" class="album-card">
+        <div class="album-art c4">
+          <div class="album-art-label"><div class="vinyl-icon"></div></div>
+          <div class="album-overlay">View Album</div>
+        </div>
+        <div class="album-meta">
+          <div class="title">Immunity</div>
+          <div class="artist">Clairo</div>
+          <div class="stars">★★★★</div>
+        </div>
+      </a>
+
+      <!-- Album Card 5 -->
+      <a href="album.html" class="album-card">
+        <div class="album-art c5">
+          <div class="album-art-label"><div class="vinyl-icon"></div></div>
+          <div class="album-overlay">View Album</div>
+        </div>
+        <div class="album-meta">
+          <div class="title">In Rainbows</div>
+          <div class="artist">Radiohead</div>
+          <div class="stars">★★★★★</div>
+        </div>
+      </a>
+
+      <!-- Album Card 6 -->
+      <a href="album.html" class="album-card">
+        <div class="album-art c6">
+          <div class="album-art-label"><div class="vinyl-icon"></div></div>
+          <div class="album-overlay">View Album</div>
+        </div>
+        <div class="album-meta">
+          <div class="title">Currents</div>
+          <div class="artist">Tame Impala</div>
+          <div class="stars">★★★★½</div>
+        </div>
+      </a>
+
+    </div><!-- /albums-grid -->
+  </div>
+
+
+  <!-- ╔══════════════════════════════╗ -->
+  <!-- ║  RECENT REVIEWS SECTION      ║ -->
+  <!-- ╚══════════════════════════════╝ -->
+  <div class="section" style="padding-top:0">
+    <div class="section-head">
+      <h2>Recent Reviews</h2>
+      <a href="#">All reviews →</a>
+    </div>
+
+    <div class="reviews-list">
+
+      <!-- Review 1 -->
+      <div class="review-row">
+        <div class="avatar">🎧</div>
+        <div class="review-body">
+          <div class="reviewer">
+            <a href="profile.html" class="name">vinyl_moth</a>
+            <span class="album-tag">Blonde · Frank Ocean</span>
+            <span class="stars">★★★★★</span>
+            <span class="time">2h ago</span>
+          </div>
+          <p class="review-text">
+            There are albums and then there is <em>Blonde</em>. Ocean dismantles every convention of
+            R&amp;B and rebuilds it from raw feeling. "Self Control" alone justifies its existence in
+            the canon. A record I return to whenever words fail me.
+          </p>
+        </div>
+      </div>
+
+      <!-- Review 2 -->
+      <div class="review-row">
+        <div class="avatar">🎶</div>
+        <div class="review-body">
+          <div class="reviewer">
+            <a href="profile.html" class="name">wavecrasher</a>
+            <span class="album-tag">Currents · Tame Impala</span>
+            <span class="stars">★★★★½</span>
+            <span class="time">5h ago</span>
+          </div>
+          <p class="review-text">
+            Kevin Parker single-handedly making the case for bedroom pop as high art.
+            Currents is psychedelia for the heartbroken and the disconnected.
+            "Eventually" hit different at 2 am. Highly recommend the headphone experience.
+          </p>
+        </div>
+      </div>
+
+      <!-- Review 3 -->
+      <div class="review-row">
+        <div class="avatar">🎸</div>
+        <div class="review-body">
+          <div class="reviewer">
+            <a href="profile.html" class="name">nocturnalNotes</a>
+            <span class="album-tag">Rumours · Fleetwood Mac</span>
+            <span class="stars">★★★★★</span>
+            <span class="time">Yesterday</span>
+          </div>
+          <p class="review-text">
+            Remarkable that so much tension and longing between band members produced something
+            so warm. Every track is a study in controlled heartbreak. A masterclass that time
+            has not touched.
+          </p>
+        </div>
+      </div>
+
+    </div><!-- /reviews-list -->
+  </div>
+
+
+  <!-- ╔══════════════════════════════╗ -->
+  <!-- ║  FOOTER                      ║ -->
+  <!-- ╚══════════════════════════════╝ -->
+  <footer>
+    <p><strong>MusicBox</strong> · Track What You Hear · &copy; 2024</p>
+    <p style="margin-top:6px">About · Press · API · Jobs · Privacy · Terms</p>
+  </footer>
+
+</body>
+</html>

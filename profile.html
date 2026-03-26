@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>vinyl_moth · MusicBox Profile</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0e0e0f;
+      --surface:   #181819;
+      --border:    #2a2a2c;
+      --accent:    #e8c96d;
+      --text:      #f0ede8;
+      --muted:     #7a7875;
+      --font-head: 'Playfair Display', serif;
+      --font-body: 'DM Sans', sans-serif;
+      --radius:    6px;
+      --max:       1100px;
+    }
+
+    body { background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 15px; line-height: 1.6; }
+    a { color: inherit; text-decoration: none; }
+
+    /* NAV */
+    nav { position: sticky; top: 0; z-index: 100; background: rgba(14,14,15,.92); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
+    .nav-inner { max-width: var(--max); margin: 0 auto; padding: 0 24px; height: 60px; display: flex; align-items: center; gap: 32px; }
+    .logo { font-family: var(--font-head); font-size: 22px; font-weight: 900; color: var(--accent); }
+    .logo span { color: var(--text); }
+    .nav-links { display: flex; gap: 24px; list-style: none; font-size: 13px; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+    .nav-links a:hover { color: var(--text); }
+    .nav-search { flex: 1; max-width: 320px; margin-left: auto; position: relative; }
+    .nav-search input { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 7px 16px 7px 36px; color: var(--text); font-family: var(--font-body); font-size: 13px; outline: none; }
+    .nav-search input:focus { border-color: var(--accent); }
+    .nav-search::before { content: "⌕"; position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 16px; pointer-events: none; }
+    .btn { display: inline-block; padding: 7px 18px; border-radius: var(--radius); font-size: 13px; font-weight: 500; cursor: pointer; border: none; font-family: var(--font-body); transition: opacity .15s; }
+    .btn:hover { opacity: .85; }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+    .btn-primary { background: var(--accent); color: #111; }
+
+    /* ── PROFILE HEADER ─────────────────────────────────── */
+    .profile-header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .profile-header-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 48px 24px 0;
+    }
+
+    .profile-top {
+      display: flex;
+      align-items: flex-end;
+      gap: 28px;
+      margin-bottom: 28px;
+    }
+
+    /* Placeholder avatar */
+    .profile-avatar {
+      width: 96px; height: 96px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #1a1a2e, #0f3460);
+      border: 3px solid var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      flex-shrink: 0;
+    }
+
+    .profile-identity h1 {
+      font-family: var(--font-head);
+      font-size: 32px;
+      font-weight: 900;
+      letter-spacing: -1px;
+      margin-bottom: 4px;
+    }
+
+    .profile-identity .handle {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .profile-identity .bio {
+      font-size: 14px;
+      color: #c0bdb9;
+      max-width: 480px;
+    }
+
+    .profile-actions {
+      margin-left: auto;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      padding-bottom: 4px;
+    }
+
+    /* ── STAT BAR ─────────────────────────────────────── */
+    .stat-bar {
+      display: flex;
+      gap: 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .stat-tab {
+      padding: 16px 28px;
+      font-size: 13px;
+      color: var(--muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: color .15s;
+      text-align: center;
+    }
+
+    .stat-tab strong { display: block; font-family: var(--font-head); font-size: 20px; color: var(--text); font-weight: 700; }
+    .stat-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .stat-tab.active strong { color: var(--accent); }
+    .stat-tab:hover:not(.active) { color: var(--text); }
+
+    /* ── BODY ─────────────────────────────────────────── */
+    .profile-body {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 40px 24px;
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 40px;
+      align-items: start;
+    }
+
+    /* ── REVIEWED ALBUMS GRID ─────────────────────────── */
+    .section-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--muted);
+      font-weight: 500;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .album-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+
+    .album-tile { cursor: pointer; }
+    .album-tile:hover .tile-overlay { opacity: 1; }
+
+    .tile-art {
+      aspect-ratio: 1;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .tile-art.t1 { background: linear-gradient(135deg,#1a1a2e,#0f3460); }
+    .tile-art.t2 { background: linear-gradient(135deg,#2d1b69,#e94560); }
+    .tile-art.t3 { background: linear-gradient(135deg,#0a3d62,#1e3799); }
+    .tile-art.t4 { background: linear-gradient(135deg,#1b2631,#c0392b); }
+    .tile-art.t5 { background: linear-gradient(135deg,#1b2631,#27ae60); }
+    .tile-art.t6 { background: linear-gradient(135deg,#1c1c1e,#bdc3c7); }
+    .tile-art.t7 { background: linear-gradient(135deg,#4a235a,#8e44ad); }
+    .tile-art.t8 { background: linear-gradient(135deg,#1a5276,#48c9b0); }
+
+    .tile-vinyl {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,.15);
+      position: relative;
+      opacity: .4;
+    }
+
+    .tile-vinyl::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,.15);
+    }
+
+    .tile-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,.65);
+      opacity: 0;
+      transition: opacity .2s;
+      display: flex;
+      align-items: flex-end;
+      padding: 6px;
+    }
+
+    .user-rating { font-size: 12px; color: var(--accent); }
+
+    .tile-meta { margin-top: 8px; }
+    .tile-meta .t-title { font-size: 12px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tile-meta .t-artist { font-size: 11px; color: var(--muted); }
+
+    /* ── ACTIVITY FEED ─────────────────────────────────── */
+    .activity-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+
+    .activity-art {
+      width: 44px; height: 44px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .activity-art.a1 { background: linear-gradient(135deg,#1a1a2e,#0f3460); }
+    .activity-art.a2 { background: linear-gradient(135deg,#2d1b69,#e94560); }
+    .activity-art.a3 { background: linear-gradient(135deg,#0a3d62,#6a89cc); }
+
+    .activity-content .action { color: var(--muted); }
+    .activity-content .action strong { color: var(--text); font-weight: 500; }
+    .activity-content .stars { font-size: 12px; color: var(--accent); }
+    .activity-content .excerpt { color: #b0ada9; margin-top: 4px; font-size: 13px; }
+    .activity-content .time { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+    /* ── SIDEBAR ─────────────────────────────────────── */
+    .sidebar-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 22px;
+      margin-bottom: 20px;
+    }
+
+    .sidebar-card h4 {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--muted);
+      margin-bottom: 16px;
+      font-weight: 500;
+    }
+
+    .genre-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .genre-tag {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 3px;
+      font-size: 12px;
+      background: rgba(232,201,109,.1);
+      color: var(--accent);
+      border: 1px solid rgba(232,201,109,.2);
+    }
+
+    .following-list { display: flex; flex-direction: column; gap: 10px; }
+    .follow-row { display: flex; align-items: center; gap: 10px; }
+    .mini-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--border); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+    .follow-name { font-size: 13px; font-weight: 500; }
+    .follow-count { font-size: 11px; color: var(--muted); }
+
+    /* FOOTER */
+    footer { border-top: 1px solid var(--border); padding: 32px 24px; text-align: center; font-size: 12px; color: var(--muted); }
+    footer strong { color: var(--accent); }
+  </style>
+</head>
+<body>
+
+  <!-- ╔══════════════════════════════╗ -->
+  <!-- ║  NAVIGATION BAR              ║ -->
+  <!-- ╚══════════════════════════════╝ -->
+  <nav>
+    <div class="nav-inner">
+      <a class="logo" href="index.html">Music<span>Box</span></a>
+      <ul class="nav-links">
+        <li><a href="#">Albums</a></li>
+        <li><a href="#">Members</a></li>
+        <li><a href="#">Charts</a></li>
+      </ul>
+      <div class="nav-search">
+        <input type="text" placeholder="Search albums, artists…" />
+      </div>
+      <a href="login.html" class="btn btn-outline">Sign In</a>
+      <a href="login.html" class="btn btn-primary">Join</a>
+    </div>
+  </nav>
+
+
+  <!-- ╔══════════════════════════════╗ -->
+  <!-- ║  PROFILE HEADER              ║ -->
+  <!-- ╚══════════════════════════════╝ -->
+  <header class="profile-header">
+    <div class="profile-header-inner">
+
+      <div class="profile-top">
+
+        <!-- Placeholder profile image -->
+        <div class="profile-avatar">🎧</div>
+
+        <div class="profile-identity">
+          <h1>vinyl_moth</h1>
+          <p class="handle">@vinyl_moth · Member since 2021</p>
+          <p class="bio">Chasing that feeling when a record changes you. Mostly nocturnal. Obsessed with texture, warmth, and records that refuse easy categorisation.</p>
+        </div>
+
+        <!-- Profile action buttons -->
+        <div class="profile-actions">
+          <button class="btn btn-outline">Following</button>
+          <button class="btn btn-outline">Message</button>
+        </div>
+
+      </div>
+
+      <!-- Stat tabs -->
+      <div class="stat-bar">
+        <div class="stat-tab active">
+          <strong>348</strong>
+          Albums
+        </div>
+        <div class="stat-tab">
+          <strong>127</strong>
+          Reviews
+        </div>
+        <div class="stat-tab">
+          <strong>84</strong>
+          Lists
+        </div>
+        <div class="stat-tab">
+          <strong>212</strong>
+          Followers
+        </div>
+        <div class="stat-tab">
+          <strong>179</strong>
+          Following
+        </div>
+        <div class="stat-tab">
+          <strong>4.1</strong>
+          Avg Rating
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+
+  <!-- ╔══════════════════════════════╗ -->
+  <!-- ║  PROFILE BODY                ║ -->
+  <!-- ╚══════════════════════════════╝ -->
+  <div class="profile-body">
+
+    <!-- ── LEFT MAIN COLUMN ── -->
+    <div>
+
+      <!-- Recently Reviewed Albums -->
+      <p class="section-label">Recently Reviewed</p>
+
+      <div class="album-grid">
+        <a href="album.html" class="album-tile">
+          <div class="tile-art t1">
+            <div class="tile-vinyl"></div>
+            <div class="tile-overlay"><span class="user-rating">★★★★★</span></div>
+          </div>
+          <div class="tile-meta">
+            <div class="t-title">Blonde</div>
+            <div class="t-artist">Frank Ocean</div>
+          </div>
+        </a>
+
+        <a href="album.html" class="album-tile">
+          <div class="tile-art t2">
+            <div class="tile-vinyl"></div>
+            <div class="tile-overlay"><span class="user-rating">★★★★½</span></div>
+          </div>
+          <div class="tile-meta">
+            <div class="t-title">Currents</div>
+            <div class="t-artist">Tame Impala</div>
+          </div>
+        </a>
+
+        <a href="album.html" class="album-tile">
+          <div class="tile-art t3">
+            <div class="tile-vinyl"></div>
+            <div class="tile-overlay"><span class="user-rating">★★★★★</span></div>
+          </div>
+          <div class="tile-meta">
+            <div class="t-title">In Rainbows</div>
+            <div class="t-artist">Radiohead</div>
+          </div>
+        </a>
+
+        <a href="album.html" class="album-tile">
+          <div class="tile-art t4">
+            <div class="tile-vinyl"></div>
+            <div class="tile-overlay"><span class="user-rating">★★★★</span></div>
+          </div>
+          <div class="tile-meta">
+            <div class="t-title">Rumours</div>
+            <div class="t-artist">Fleetwood Mac</div>
+          </div>
+        </a>
+
+        <a href="album.html" class="album-tile">
+          <div class="tile-art t5">
+            <div class="tile-vinyl"></div>
+            <div class="tile-overlay"><span class="user-rating">★★★★★</span></div>
+          </div>
+          <div class="tile-meta">
+            <div class="t-title">To Pimp a Butterfly</div>
+            <div class="t-artist">Kendrick Lamar</div>
+          </div>
+        </a>
+
+        <a href="album.html" class="album-tile">
+          <div class="tile-art t6">
+            <div class="tile-vinyl"></div>
+            <div class="tile-overlay"><span class="user-rating">★★★½</span></div>
+          </div>
+          <div class="tile-meta">
+            <div class="t-title">Immunity</div>
+            <div class="t-artist">Clairo</div>
+          </div>
+        </a>
+
+        <a href="album.html" class="album-tile">
+          <div class="tile-art t7">
+            <div class="tile-vinyl"></div>
+            <div class="tile-overlay"><span class="user-rating">★★★★</span></div>
+          </div>
+          <div class="tile-meta">
+            <div class="t-title">Norman F***ing Rockwell!</div>
+            <div class="t-artist">Lana Del Rey</div>
+          </div>
+        </a>
+
+        <a href="album.html" class="album-tile">
+          <div class="tile-art t8">
+            <div class="tile-vinyl"></div>
+            <div class="tile-overlay"><span class="user-rating">★★★★½</span></div>
+          </div>
+          <div class="tile-meta">
+            <div class="t-title">4:44</div>
+            <div class="t-artist">Jay-Z</div>
+          </div>
+        </a>
+      </div>
+
+      <!-- ── Activity Feed ── -->
+      <p class="section-label">Recent Activity</p>
+
+      <div class="activity-item">
+        <div class="activity-art a1"></div>
+        <div class="activity-content">
+          <p class="action"><strong>vinyl_moth</strong> reviewed <strong>Blonde</strong></p>
+          <p class="stars">★★★★★</p>
+          <p class="excerpt">"There are albums and then there is Blonde. Ocean dismantles every convention of R&amp;B…"</p>
+          <p class="time">2 hours ago</p>
+        </div>
+      </div>
+
+      <div class="activity-item">
+        <div class="activity-art a2"></div>
+        <div class="activity-content">
+          <p class="action"><strong>vinyl_moth</strong> liked <strong>Currents</strong></p>
+          <p class="time">Yesterday</p>
+        </div>
+      </div>
+
+      <div class="activity-item">
+        <div class="activity-art a3"></div>
+        <div class="activity-content">
+          <p class="action"><strong>vinyl_moth</strong> added <strong>In Rainbows</strong> to list <strong>"Headphone Masterpieces"</strong></p>
+          <p class="time">2 days ago</p>
+        </div>
+      </div>
+
+    </div><!-- /main-col -->
+
+
+    <!-- ── SIDEBAR ── -->
+    <aside>
+
+      <!-- Favourite genres -->
+      <div class="sidebar-card">
+        <h4>Top Genres</h4>
+        <div class="genre-tags">
+          <span class="genre-tag">Experimental R&amp;B</span>
+          <span class="genre-tag">Psychedelic Rock</span>
+          <span class="genre-tag">Art Pop</span>
+          <span class="genre-tag">Hip-Hop</span>
+          <span class="genre-tag">Shoegaze</span>
+          <span class="genre-tag">Dream Pop</span>
+        </div>
+      </div>
+
+      <!-- People they follow -->
+      <div class="sidebar-card">
+        <h4>Following</h4>
+        <div class="following-list">
+          <div class="follow-row">
+            <div class="mini-avatar">🎶</div>
+            <div>
+              <div class="follow-name">wavecrasher</div>
+              <div class="follow-count">212 reviews</div>
+            </div>
+          </div>
+          <div class="follow-row">
+            <div class="mini-avatar">🎸</div>
+            <div>
+              <div class="follow-name">nocturnalNotes</div>
+              <div class="follow-count">87 reviews</div>
+            </div>
+          </div>
+          <div class="follow-row">
+            <div class="mini-avatar">🌙</div>
+            <div>
+              <div class="follow-name">midnightplaylists</div>
+              <div class="follow-count">304 reviews</div>
+            </div>
+          </div>
+          <div class="follow-row">
+            <div class="mini-avatar">🎹</div>
+            <div>
+              <div class="follow-name">dustygrooves</div>
+              <div class="follow-count">143 reviews</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick stats breakdown -->
+      <div class="sidebar-card">
+        <h4>Rating Breakdown</h4>
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:13px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="color:var(--accent);width:40px;">★★★★★</span>
+            <div style="flex:1;background:var(--bg);border-radius:3px;height:6px;overflow:hidden;">
+              <div style="width:38%;height:100%;background:var(--accent);border-radius:3px;"></div>
+            </div>
+            <span style="color:var(--muted);width:28px;text-align:right;">48</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="color:var(--accent);width:40px;">★★★★</span>
+            <div style="flex:1;background:var(--bg);border-radius:3px;height:6px;overflow:hidden;">
+              <div style="width:56%;height:100%;background:var(--accent);border-radius:3px;"></div>
+            </div>
+            <span style="color:var(--muted);width:28px;text-align:right;">71</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="color:var(--accent);width:40px;">★★★</span>
+            <div style="flex:1;background:var(--bg);border-radius:3px;height:6px;overflow:hidden;">
+              <div style="width:20%;height:100%;background:var(--accent);border-radius:3px;"></div>
+            </div>
+            <span style="color:var(--muted);width:28px;text-align:right;">25</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="color:var(--accent);width:40px;">★★</span>
+            <div style="flex:1;background:var(--bg);border-radius:3px;height:6px;overflow:hidden;">
+              <div style="width:6%;height:100%;background:var(--accent);border-radius:3px;"></div>
+            </div>
+            <span style="color:var(--muted);width:28px;text-align:right;">8</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="color:var(--accent);width:40px;">★</span>
+            <div style="flex:1;background:var(--bg);border-radius:3px;height:6px;overflow:hidden;">
+              <div style="width:2%;height:100%;background:var(--accent);border-radius:3px;"></div>
+            </div>
+            <span style="color:var(--muted);width:28px;text-align:right;">3</span>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+  </div><!-- /profile-body -->
+
+  <footer>
+    <p><strong>MusicBox</strong> · Track What You Hear · &copy; 2024</p>
+  </footer>
+
+</body>
+</html>
