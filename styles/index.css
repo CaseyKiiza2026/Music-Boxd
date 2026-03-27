@@ -1,0 +1,258 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   INDEX PAGE STYLES
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* ── HERO STRIP ─────────────────────────────────────────────────────────── */
+.hero {
+  border-bottom: 1px solid var(--border);
+  padding: 56px 24px 48px;
+  text-align: center;
+  background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(232, 201, 109, .08) 0%, transparent 70%);
+}
+
+.hero h1 {
+  font-family: var(--font-head);
+  font-size: clamp(36px, 6vw, 72px);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -2px;
+  max-width: 700px;
+  margin: 0 auto 16px;
+}
+
+.hero h1 em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.hero p {
+  color: var(--muted);
+  font-size: 16px;
+  margin-bottom: 28px;
+}
+
+.hero-cta {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+/* ── SHARED SECTION ─────────────────────────────────────────────────────── */
+.section {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 56px 24px;
+}
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 14px;
+}
+
+.section-head h2 {
+  font-family: var(--font-head);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.section-head a {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--accent);
+  font-weight: 500;
+}
+
+/* ── FEATURED ALBUMS GRID ───────────────────────────────────────────────── */
+.albums-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 20px;
+}
+
+.album-card {
+  position: relative;
+  cursor: pointer;
+}
+
+.album-card:hover .album-overlay {
+  opacity: 1;
+}
+
+.album-art {
+  aspect-ratio: 1;
+  background: var(--surface);
+  border-radius: var(--radius);
+  overflow: hidden;
+  position: relative;
+  border: 1px solid var(--border);
+}
+
+/* Colourful placeholder covers */
+.album-art.c1 {
+  background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+}
+
+.album-art.c2 {
+  background: linear-gradient(135deg, #2d1b69, #11022e, #e94560);
+}
+
+.album-art.c3 {
+  background: linear-gradient(135deg, #0a3d62, #1e3799, #6a89cc);
+}
+
+.album-art.c4 {
+  background: linear-gradient(135deg, #1b2631, #78281f, #c0392b);
+}
+
+.album-art.c5 {
+  background: linear-gradient(135deg, #0d2137, #1a6b4a, #27ae60);
+}
+
+.album-art.c6 {
+  background: linear-gradient(135deg, #1c1c1e, #3d3d3d, #bdc3c7);
+}
+
+.album-art-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  opacity: .25;
+}
+
+.vinyl-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  position: relative;
+}
+
+.vinyl-icon::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+}
+
+.album-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, .6);
+  border-radius: var(--radius);
+  opacity: 0;
+  transition: opacity .2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.album-meta {
+  margin-top: 10px;
+}
+
+.album-meta .title {
+  font-weight: 500;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.album-meta .artist {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.album-meta .stars {
+  font-size: 11px;
+  color: var(--accent);
+  margin-top: 2px;
+}
+
+/* ── RECENT REVIEWS ─────────────────────────────────────────────────────── */
+.reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.review-row {
+  display: grid;
+  grid-template-columns: 52px 1fr;
+  gap: 16px;
+  align-items: start;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 10px;
+}
+
+.avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.review-body .reviewer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.reviewer .name {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.reviewer .album-tag {
+  font-size: 11px;
+  background: rgba(232, 201, 109, .12);
+  color: var(--accent);
+  border-radius: 3px;
+  padding: 1px 7px;
+}
+
+.reviewer .stars {
+  font-size: 12px;
+  color: var(--accent);
+}
+
+.reviewer .time {
+  font-size: 11px;
+  color: var(--muted);
+  margin-left: auto;
+}
+
+.review-text {
+  font-size: 14px;
+  color: #c0bdb9;
+  line-height: 1.65;
+}

@@ -1,0 +1,340 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   ALBUM PAGE STYLES
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* ── ALBUM HERO ─────────────────────────────────────────────────────────── */
+.album-hero {
+  background: linear-gradient(to bottom, rgba(26, 26, 46, .6) 0%, var(--bg) 100%),
+              linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+  border-bottom: 1px solid var(--border);
+  padding: 56px 24px 48px;
+}
+
+.album-hero-inner {
+  max-width: var(--max);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 40px;
+  align-items: end;
+}
+
+/* Placeholder album cover */
+.album-cover {
+  aspect-ratio: 1;
+  border-radius: 8px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+  border: 1px solid rgba(255, 255, 255, .08);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, .5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.vinyl-big {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, .15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vinyl-big::after {
+  content: '';
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, .15);
+}
+
+.album-info {
+  padding-bottom: 4px;
+}
+
+.album-info .genre-tag {
+  display: inline-block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.album-info h1 {
+  font-family: var(--font-head);
+  font-size: clamp(32px, 5vw, 56px);
+  font-weight: 900;
+  letter-spacing: -1.5px;
+  line-height: 1.05;
+  margin-bottom: 10px;
+}
+
+.album-info .artist-line {
+  font-size: 18px;
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+
+.album-info .artist-line a {
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+}
+
+/* Static star rating display */
+.rating-display {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.stars-large {
+  font-size: 26px;
+  color: var(--accent);
+  letter-spacing: 2px;
+}
+
+.rating-display .count {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.album-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+  color: var(--text);
+}
+
+.badge.active {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ── MAIN LAYOUT ────────────────────────────────────────────────────────── */
+.album-body {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 48px 24px;
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 48px;
+  align-items: start;
+}
+
+/* ── REVIEW FORM ────────────────────────────────────────────────────────── */
+.form-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 28px;
+  margin-bottom: 40px;
+}
+
+.form-card h3 {
+  font-family: var(--font-head);
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 18px;
+}
+
+/* Star picker (purely CSS, decorative) */
+.star-picker {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.star-picker span {
+  font-size: 28px;
+  color: var(--border);
+  cursor: pointer;
+  transition: color .1s;
+}
+
+.star-picker span.lit,
+.star-picker span:hover {
+  color: var(--accent);
+}
+
+.form-card textarea {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  resize: vertical;
+  min-height: 120px;
+  outline: none;
+  line-height: 1.6;
+}
+
+.form-card textarea:focus {
+  border-color: var(--accent);
+}
+
+.form-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 14px;
+}
+
+.form-footer small {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* ── REVIEW LIST ────────────────────────────────────────────────────────── */
+.reviews-heading {
+  font-family: var(--font-head);
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.review-item {
+  padding: 20px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.reviewer-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.avatar-sm {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.reviewer-row .name {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.reviewer-row .stars {
+  font-size: 13px;
+  color: var(--accent);
+}
+
+.reviewer-row .date {
+  font-size: 11px;
+  color: var(--muted);
+  margin-left: auto;
+}
+
+.review-text {
+  font-size: 14px;
+  color: #c0bdb9;
+  line-height: 1.7;
+}
+
+.helpful {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 12px;
+}
+
+.helpful a {
+  color: var(--accent);
+}
+
+/* ── SIDEBAR ────────────────────────────────────────────────────────────── */
+.sidebar-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.sidebar-card h4 {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--muted);
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+
+.tracklist {
+  list-style: none;
+}
+
+.tracklist li {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+  color: #c0bdb9;
+}
+
+.tracklist li:last-child {
+  border-bottom: none;
+}
+
+.tracklist li span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.stat-box {
+  background: var(--bg);
+  border-radius: var(--radius);
+  padding: 14px;
+  text-align: center;
+}
+
+.stat-box .num {
+  font-family: var(--font-head);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.stat-box .label {
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
