@@ -17,7 +17,7 @@ async function renderFeaturedAlbums() {
   }
 
   // Show loading state
-  grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #FFF; padding: 40px; font-size: 14px; font-family: system-ui; background: #1a1a1a;">📀 Loading albums...</p>';
+  grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #FFF; padding: 40px; font-size: 14px; font-family: system-ui; background: #1a1a1a;">Loading albums...</p>';
 
   try {
     console.log('Fetching albums from API...');
@@ -54,7 +54,7 @@ async function renderFeaturedAlbums() {
       .join('');
   } catch (error) {
     console.error('Error rendering featured albums:', error);
-    grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #ff6b6b; padding: 40px; font-size: 14px; font-family: system-ui; background: #1a1a1a;">❌ Error loading albums: ${error.message}</p>`;
+    grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #ff6b6b; padding: 40px; font-size: 14px; font-family: system-ui; background: #1a1a1a;">Error loading albums: ${error.message}</p>`;
   }
 }
 
