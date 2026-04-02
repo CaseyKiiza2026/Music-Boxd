@@ -5,7 +5,7 @@ const projectRoot = fileURLToPath(new URL('.', import.meta.url));
 
 export default defineConfig({
   root: projectRoot,
-  base: '/Music-Boxd/',
+  base: '/Music-Boxd/',              //important for project pages
   server: {
     port: 5173,
     open: false,
