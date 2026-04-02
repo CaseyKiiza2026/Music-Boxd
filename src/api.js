@@ -269,10 +269,11 @@ function formatAlbum(album) {
 }
 
 /**
- * Get top 10 rated albums from current trending album results.
+ * Get top rated albums from current trending album results.
+ * @param {number} limit - Maximum number of featured albums to return
  * @returns {Promise<Array>} Array of featured albums
  */
-async function getFeaturedAlbums() {
+async function getFeaturedAlbums(limit = 10) {
   try {
     const endpoint = `${API_BASE}/trending.php?country=us&type=itunes&format=albums`;
     const response = await fetch(endpoint);
@@ -288,10 +289,12 @@ async function getFeaturedAlbums() {
     const albumIds = [...new Set(trendingAlbums.map((album) => album.idAlbum).filter(Boolean))];
     const albumDetails = await Promise.all(albumIds.map((albumId) => getAlbumDetails(albumId)));
 
+    const safeLimit = Math.max(1, Number(limit) || 10);
+
     return albumDetails
       .filter(Boolean)
       .sort((a, b) => (Number(b.intScore) || 0) - (Number(a.intScore) || 0))
-      .slice(0, 10)
+      .slice(0, safeLimit)
       .map(formatAlbum);
   } catch (error) {
     console.error('Error fetching featured albums:', error);

@@ -33,7 +33,7 @@ async function renderFeaturedAlbums() {
 
   try {
     console.log('Fetching albums from API...');
-    const albums = await getFeaturedAlbums();
+    const albums = await getFeaturedAlbums(8);
     console.log('Albums fetched:', albums);
 
     if (albums.length === 0) {
