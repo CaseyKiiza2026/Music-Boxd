@@ -3,13 +3,6 @@
  * Vite will process this file and generate the bundle
  */
 
-// Import styles
-import '../styles/shared.css';
-import '../styles/index.css';
-import '../styles/album.css';
-import '../styles/profile.css';
-import '../styles/login.css';
-
 // Import page-specific modules
 import './index.js';
 import './album.js';
