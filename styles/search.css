@@ -1,0 +1,237 @@
+/**
+ * Search Results Page Styles
+ */
+
+.search-hero {
+  background: radial-gradient(135% 100% at 50% 0%, #e8c96d 0%, #1a1a1a 100%);
+  padding: 60px 20px;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.search-hero h1 {
+  font-family: var(--font-head);
+  font-size: 2.5rem;
+  color: var(--text);
+  margin: 0;
+  font-weight: 700;
+}
+
+.search-section {
+  max-width: var(--max);
+  margin: 0 auto 60px;
+  padding: 0 20px;
+}
+
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.result-count {
+  font-family: var(--font-body);
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+/**
+ * Album Grid
+ */
+.albums-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.album-card {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: var(--text);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  border-radius: var(--radius);
+}
+
+.album-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(232, 201, 109, 0.1);
+}
+
+.album-art {
+  position: relative;
+  aspect-ratio: 1;
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.album-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.album-art-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: var(--surface);
+}
+
+.vinyl-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #424242, #1a1a1a);
+  box-shadow: inset 0 0 0 3px #e8c96d;
+  position: relative;
+}
+
+.vinyl-icon::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #e8c96d;
+}
+
+.album-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.album-card:hover .album-overlay {
+  opacity: 1;
+}
+
+.album-meta {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.album-meta .title {
+  font-family: var(--font-head);
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.2;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.album-meta .artist {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.album-meta .stars {
+  font-size: 0.8rem;
+  color: #e8c96d;
+  margin-top: 2px;
+}
+
+/**
+ * Pagination
+ */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 40px;
+}
+
+.page-status {
+  font-family: var(--font-body);
+  color: var(--muted);
+  font-size: 0.95rem;
+  min-width: 120px;
+  text-align: center;
+}
+
+.page-btn {
+  padding: 8px 16px;
+  font-size: 0.9rem;
+}
+
+.page-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/**
+ * Responsive
+ */
+@media (max-width: 1024px) {
+  .albums-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 16px;
+  }
+
+  .search-hero h1 {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .albums-grid {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 12px;
+  }
+
+  .search-hero {
+    padding: 40px 16px;
+    margin-bottom: 30px;
+  }
+
+  .search-hero h1 {
+    font-size: 1.5rem;
+  }
+
+  .section-head {
+    margin-bottom: 20px;
+  }
+
+  .pagination {
+    gap: 8px;
+    margin-top: 30px;
+  }
+
+  .page-btn {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+  }
+}

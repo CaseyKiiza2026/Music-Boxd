@@ -24,6 +24,10 @@
   padding-top: 44px;
 }
 
+.browse-title {
+  letter-spacing: -0.5px;
+}
+
 .result-count {
   font-size: 12px;
   letter-spacing: .08em;
@@ -40,6 +44,7 @@
 
 .album-card {
   position: relative;
+  margin: 1em;
 }
 
 .album-card:hover .album-overlay {

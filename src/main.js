@@ -7,6 +7,7 @@
 import './index.js';
 import './album.js';
 import './browse.js';
+import './search.js';
 import './profile.js';
 
 // Initialize modules - they will run automatically when the file is executed

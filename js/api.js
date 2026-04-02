@@ -93,6 +93,25 @@ async function searchByTrack(trackName) {
 }
 
 /**
+ * Search albums by a general text query.
+ * @param {string} query - Album or artist search term
+ * @returns {Promise<Array>} Array of matching album objects
+ */
+async function searchBrowseAlbums(query) {
+  try {
+    const endpoint = `${API_BASE}/searchalbum.php?s=${encodeURIComponent(query)}`;
+    const response = await fetch(endpoint);
+    if (!response.ok) throw new Error('API request failed');
+
+    const data = await safeParseJson(response, 'browse album search');
+    return data?.album || [];
+  } catch (error) {
+    console.error('Error searching browse albums:', error);
+    return [];
+  }
+}
+
+/**
  * Get album details by album ID
  * @param {string} albumId - TheAudioDB album ID
  * @returns {Promise<Object|null>} Album object with full details
@@ -264,6 +283,7 @@ export {
   searchAlbums,
   getArtist,
   searchByTrack,
+  searchBrowseAlbums,
   getAlbumDetails,
   formatAlbum,
   getFeaturedAlbums,

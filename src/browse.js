@@ -1,14 +1,22 @@
 /**
- * Browse Page - Paginated Albums
+ * Browse Page - Paginated Albums Catalog
  */
 
-import { getBrowseAlbumsPage } from './api.js';
+import { formatAlbum, getBrowseAlbumsPage } from './api.js';
 
 const PAGE_SIZE = 50;
 
 let currentPage = 1;
 let totalPages = 1;
 let totalItems = 0;
+
+/**
+ * Run browse features only on browse route.
+ */
+function isBrowsePage() {
+  const path = window.location.pathname.toLowerCase();
+  return path.endsWith('/browse.html');
+}
 
 /**
  * Build one album card for the browse grid.
@@ -34,7 +42,22 @@ function buildAlbumCard(album) {
 }
 
 /**
- * Render the current page of albums.
+ * Update the URL without triggering a reload.
+ */
+function syncUrl(page) {
+  const url = new URL(window.location.href);
+
+  if (page > 1) {
+    url.searchParams.set('page', String(page));
+  } else {
+    url.searchParams.delete('page');
+  }
+
+  window.history.replaceState({}, '', url);
+}
+
+/**
+ * Render the current page of catalog albums.
  */
 async function renderBrowsePage(page = 1) {
   const grid = document.querySelector('.albums-grid');
@@ -49,7 +72,6 @@ async function renderBrowsePage(page = 1) {
 
   const response = await getBrowseAlbumsPage(page, PAGE_SIZE);
   const albums = response.albums || [];
-
   currentPage = response.page;
   totalPages = response.totalPages;
   totalItems = response.totalItems;
@@ -64,12 +86,16 @@ async function renderBrowsePage(page = 1) {
   pageStatus.textContent = `Page ${currentPage} of ${totalPages}`;
   prevBtn.disabled = currentPage <= 1;
   nextBtn.disabled = currentPage >= totalPages;
+
+  syncUrl(currentPage);
 }
 
 /**
  * Set up browse page interactions.
  */
 function initBrowsePage() {
+  if (!isBrowsePage()) return;
+
   const grid = document.querySelector('.albums-grid');
   if (!grid) return;
 
@@ -88,11 +114,15 @@ function initBrowsePage() {
     }
   });
 
-  renderBrowsePage(1);
+  const initialPage = Math.max(1, Number(new URLSearchParams(window.location.search).get('page')) || 1);
+
+  renderBrowsePage(initialPage);
 }
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initBrowsePage);
-} else {
-  initBrowsePage();
+if (isBrowsePage()) {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initBrowsePage);
+  } else {
+    initBrowsePage();
+  }
 }

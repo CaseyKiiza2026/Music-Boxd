@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Browse Albums · MusicBox</title>
+  <title>Search Results · MusicBox</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles/shared.css">
-  <link rel="stylesheet" href="./styles/browse.css">
+  <link rel="stylesheet" href="./styles/search.css">
 </head>
 <body>
   <nav>
@@ -15,14 +15,14 @@
       <a class="logo" href="index.html">Music<span>Box</span></a>
 
       <ul class="nav-links">
-        <li><a href="browse.html" aria-current="page">Albums</a></li>
+        <li><a href="browse.html">Albums</a></li>
         <li><a href="#">Members</a></li>
         <li><a href="#">Journal</a></li>
         <li><a href="#">Charts</a></li>
       </ul>
 
       <form class="nav-search nav-search-form" action="search.html" method="get">
-        <input class="nav-search-input" type="search" name="q" placeholder="Search albums, artists…" aria-label="Search albums or artists" />
+        <input class="nav-search-input" type="search" name="q" placeholder="Search artists, albums, or Artist - Album…" aria-label="Search albums, artists, or artist and album" />
       </form>
 
       <a href="login.html" class="btn btn-outline">Sign In</a>
@@ -30,20 +30,18 @@
     </div>
   </nav>
 
-  <section class="browse-hero">
-    <h1>Browse Albums</h1>
-    <p>Search albums or artists, then browse the catalog without loading everything at once.</p>
+  <section class="search-hero">
+    <h1 class="search-title">Search Results</h1>
   </section>
 
-  <main class="section browse-section">
+  <main class="section search-section">
     <div class="section-head">
-      <h2 class="browse-title">All Albums</h2>
       <span class="result-count" aria-live="polite">Loading...</span>
     </div>
 
     <div class="albums-grid" aria-live="polite"></div>
 
-    <div class="pagination" aria-label="Albums pagination">
+    <div class="pagination" aria-label="Search results pagination">
       <button class="btn btn-outline page-btn" data-action="prev">← Previous</button>
       <span class="page-status" aria-live="polite">Page 1 of 1</span>
       <button class="btn btn-outline page-btn" data-action="next">Next →</button>
@@ -51,8 +49,9 @@
   </main>
 
   <footer>
-    <p><strong>MusicBox</strong> · Track What You Hear · &copy; 2024</p>
-    <p style="margin-top:6px">About · Press · API · Jobs · Privacy · Terms</p>
+    <div class="footer-content">
+      <p>&copy; 2024 Music Box. All rights reserved.</p>
+    </div>
   </footer>
 
   <script type="module" src="./src/main.js"></script>

@@ -5,9 +5,21 @@
 import { getFeaturedAlbums } from './api.js';
 
 /**
+ * Run homepage features only on index route.
+ */
+function isHomePage() {
+  const path = window.location.pathname.toLowerCase();
+  return path.endsWith('/index.html') || path === '/' || path === '';
+}
+
+/**
  * Render featured albums to the grid
  */
 async function renderFeaturedAlbums() {
+  if (!isHomePage()) {
+    return;
+  }
+
   console.log('renderFeaturedAlbums called');
   const grid = document.querySelector('.albums-grid');
   console.log('Grid element:', grid);
@@ -59,8 +71,10 @@ async function renderFeaturedAlbums() {
 }
 
 // Initialize on page load
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', renderFeaturedAlbums);
-} else {
-  renderFeaturedAlbums();
+if (isHomePage()) {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', renderFeaturedAlbums);
+  } else {
+    renderFeaturedAlbums();
+  }
 }

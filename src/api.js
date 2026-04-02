@@ -93,6 +93,135 @@ async function searchByTrack(trackName) {
 }
 
 /**
+ * Parse mixed queries like "Artist - Album" or "Album by Artist".
+ * @param {string} query - Raw user query
+ * @returns {{artist: string, album: string} | null} Parsed pair when possible
+ */
+function parseArtistAlbumQuery(query) {
+  const normalized = query.trim();
+  if (!normalized) {
+    return null;
+  }
+
+  const dashMatch = normalized.match(/^(.*?)\s[-–—]\s(.*?)$/);
+  if (dashMatch) {
+    const artist = dashMatch[1].trim();
+    const album = dashMatch[2].trim();
+    if (artist && album) {
+      return { artist, album };
+    }
+  }
+
+  const byMatch = normalized.match(/^(.*?)\s+by\s+(.*?)$/i);
+  if (byMatch) {
+    const album = byMatch[1].trim();
+    const artist = byMatch[2].trim();
+    if (artist && album) {
+      return { artist, album };
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Search albums by a general text query.
+ * @param {string} query - Album or artist search term
+ * @returns {Promise<Array>} Array of matching album objects
+ */
+async function searchBrowseAlbums(query) {
+  try {
+    const normalized = query.trim();
+    if (!normalized) {
+      return [];
+    }
+
+    const parsedQuery = parseArtistAlbumQuery(normalized);
+
+    const [albumSearchByArtistData, albumSearchByAlbumData, artistAlbums, trackMatches, strictArtistAlbumAlbums, parsedArtistMatches, parsedAlbumMatches] = await Promise.all([
+      fetch(`${API_BASE}/searchalbum.php?s=${encodeURIComponent(normalized)}`)
+        .then((response) => (response.ok ? safeParseJson(response, 'browse album search by artist') : null))
+        .catch(() => null),
+      fetch(`${API_BASE}/searchalbum.php?a=${encodeURIComponent(normalized)}`)
+        .then((response) => (response.ok ? safeParseJson(response, 'browse album search by album') : null))
+        .catch(() => null),
+      searchAlbums(normalized),
+      searchByTrack(normalized),
+      parsedQuery ? searchAlbums(parsedQuery.artist, parsedQuery.album) : Promise.resolve([]),
+      parsedQuery
+        ? fetch(`${API_BASE}/searchalbum.php?s=${encodeURIComponent(parsedQuery.artist)}`)
+            .then((response) => (response.ok ? safeParseJson(response, 'parsed query artist search') : null))
+            .then((data) => data?.album || [])
+            .catch(() => [])
+        : Promise.resolve([]),
+      parsedQuery
+        ? fetch(`${API_BASE}/searchalbum.php?a=${encodeURIComponent(parsedQuery.album)}`)
+            .then((response) => (response.ok ? safeParseJson(response, 'parsed query album search') : null))
+            .then((data) => data?.album || [])
+            .catch(() => [])
+        : Promise.resolve([])
+    ]);
+
+    const merged = [];
+    const seen = new Set();
+
+    const addAlbum = (album) => {
+      if (!album) return;
+      const key = album.idAlbum || `${album.strArtist || ''}|${album.strAlbum || ''}`;
+      if (!key || seen.has(key)) return;
+      seen.add(key);
+      merged.push(album);
+    };
+
+    (albumSearchByArtistData?.album || []).forEach(addAlbum);
+    (albumSearchByAlbumData?.album || []).forEach(addAlbum);
+    artistAlbums.forEach(addAlbum);
+    strictArtistAlbumAlbums.forEach(addAlbum);
+
+    if (parsedQuery) {
+      const artistNeedle = parsedQuery.artist.toLowerCase();
+      const albumNeedle = parsedQuery.album.toLowerCase();
+
+      parsedArtistMatches
+        .filter((album) => {
+          const name = (album?.strAlbum || '').toLowerCase();
+          return name.includes(albumNeedle);
+        })
+        .forEach(addAlbum);
+
+      parsedAlbumMatches
+        .filter((album) => {
+          const artist = (album?.strArtist || '').toLowerCase();
+          return artist.includes(artistNeedle);
+        })
+        .forEach(addAlbum);
+    }
+
+    // Track search returns track-level records; convert them to album-shaped records.
+    trackMatches.forEach((track) => {
+      addAlbum({
+        idAlbum: track.idAlbum,
+        strAlbum: track.strAlbum,
+        strArtist: track.strArtist,
+        intYearReleased: track.intYearReleased,
+        strGenre: track.strGenre,
+        strStyle: track.strStyle,
+        strAlbumThumb: track.strAlbumThumb || track.strTrackThumb,
+        strDescription: track.strDescriptionEN,
+        intScore: track.intScore,
+        strReleaseDate: track.strReleaseDate,
+        strLabel: track.strLabel
+      });
+    });
+
+    return merged;
+  } catch (error) {
+    console.error('Error searching browse albums:', error);
+    return [];
+  }
+}
+
+/**
  * Get album details by album ID
  * @param {string} albumId - TheAudioDB album ID
  * @returns {Promise<Object|null>} Album object with full details
@@ -264,6 +393,7 @@ export {
   searchAlbums,
   getArtist,
   searchByTrack,
+  searchBrowseAlbums,
   getAlbumDetails,
   formatAlbum,
   getFeaturedAlbums,
