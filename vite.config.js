@@ -13,10 +13,18 @@ export default defineConfig({
   },
   build: {
     target: 'esnext',
-    minify: 'terser',
+    minify: 'esbuild',
     sourcemap: false,
     outDir: 'dist',
-    assetsDir: 'assets'
+    assetsDir: 'assets',
+    rollupOptions: {
+      input: {
+        main: fileURLToPath(new URL('./index.html', import.meta.url)),
+        album: fileURLToPath(new URL('./album.html', import.meta.url)),
+        login: fileURLToPath(new URL('./login.html', import.meta.url)),
+        profile: fileURLToPath(new URL('./profile.html', import.meta.url)),
+      }
+    }
   },
   resolve: {
     extensions: ['.js', '.json']
