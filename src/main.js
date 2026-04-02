@@ -6,6 +6,7 @@
 // Import page-specific modules
 import './index.js';
 import './album.js';
+import './browse.js';
 import './profile.js';
 
 // Initialize modules - they will run automatically when the file is executed

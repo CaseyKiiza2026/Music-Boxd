@@ -4,6 +4,11 @@
  */
 
 const API_BASE = 'https://www.theaudiodb.com/api/v1/json/2';
+let cachedTrendingAlbumIds = null;
+let cachedBrowseAlbumIds = null;
+
+const BROWSE_COUNTRIES = ['us', 'gb', 'ca', 'au', 'de', 'fr', 'jp'];
+const BROWSE_TYPES = ['itunes', 'applemusic', 'spotify', 'deezer'];
 
 /**
  * Safely parse JSON responses that may return an empty or invalid body.
@@ -135,7 +140,7 @@ function formatAlbum(album) {
 }
 
 /**
- * Get top 8 rated albums from current trending album results.
+ * Get top 10 rated albums from current trending album results.
  * @returns {Promise<Array>} Array of featured albums
  */
 async function getFeaturedAlbums() {
@@ -157,11 +162,101 @@ async function getFeaturedAlbums() {
     return albumDetails
       .filter(Boolean)
       .sort((a, b) => (Number(b.intScore) || 0) - (Number(a.intScore) || 0))
-      .slice(0, 8)
+      .slice(0, 10)
       .map(formatAlbum);
   } catch (error) {
     console.error('Error fetching featured albums:', error);
     return [];
+  }
+}
+
+/**
+ * Build a broad album ID list by aggregating multiple chart feeds.
+ * This avoids relying only on iTunes US trending for browse data.
+ * @returns {Promise<Array<string>>} Unique album IDs
+ */
+async function getBrowseAlbumIds() {
+  if (cachedBrowseAlbumIds) {
+    return cachedBrowseAlbumIds;
+  }
+
+  const requests = [];
+  for (const country of BROWSE_COUNTRIES) {
+    for (const type of BROWSE_TYPES) {
+      requests.push(
+        fetch(`${API_BASE}/trending.php?country=${country}&type=${type}&format=albums`)
+          .then((response) => (response.ok ? safeParseJson(response, `browse trending ${country}/${type}`) : null))
+          .catch(() => null)
+      );
+    }
+  }
+
+  const results = await Promise.all(requests);
+  const uniqueIds = new Set();
+
+  results.forEach((data) => {
+    (data?.trending || []).forEach((album) => {
+      if (album?.idAlbum) {
+        uniqueIds.add(album.idAlbum);
+      }
+    });
+  });
+
+  cachedBrowseAlbumIds = [...uniqueIds];
+  return cachedBrowseAlbumIds;
+}
+
+/**
+ * Get paginated albums from a broad aggregated chart catalog.
+ * Only loads album details for the requested page.
+ * @param {number} page - Current page number (1-based)
+ * @param {number} pageSize - Number of albums per page
+ * @returns {Promise<{albums: Array, page: number, totalPages: number, totalItems: number}>}
+ */
+async function getBrowseAlbumsPage(page = 1, pageSize = 12) {
+  try {
+    const browseAlbumIds = await getBrowseAlbumIds();
+
+    // Fallback to iTunes-US trending if aggregate feeds are unavailable.
+    if (!browseAlbumIds.length) {
+      if (!cachedTrendingAlbumIds) {
+        const endpoint = `${API_BASE}/trending.php?country=us&type=itunes&format=albums`;
+        const response = await fetch(endpoint);
+        if (!response.ok) throw new Error('API request failed');
+
+        const data = await safeParseJson(response, 'trending albums for browse fallback');
+        const trendingAlbums = data?.trending || [];
+        cachedTrendingAlbumIds = [
+          ...new Set(trendingAlbums.map((album) => album.idAlbum).filter(Boolean))
+        ];
+      }
+    }
+
+    const allAlbumIds = browseAlbumIds.length ? browseAlbumIds : cachedTrendingAlbumIds || [];
+
+    const totalItems = allAlbumIds.length;
+    const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+    const safePage = Math.min(Math.max(1, Number(page) || 1), totalPages);
+    const startIndex = (safePage - 1) * pageSize;
+    const pageIds = allAlbumIds.slice(startIndex, startIndex + pageSize);
+
+    const albumDetails = await Promise.all(pageIds.map((albumId) => getAlbumDetails(albumId)));
+    const albums = albumDetails.filter(Boolean).map(formatAlbum);
+
+    return {
+      albums,
+      page: safePage,
+      totalPages,
+      totalItems
+    };
+  } catch (error) {
+    console.error('Error fetching paginated browse albums:', error);
+    return {
+      albums: [],
+      page: 1,
+      totalPages: 1,
+      totalItems: 0
+    };
   }
 }
 
@@ -171,5 +266,6 @@ export {
   searchByTrack,
   getAlbumDetails,
   formatAlbum,
-  getFeaturedAlbums
+  getFeaturedAlbums,
+  getBrowseAlbumsPage
 };

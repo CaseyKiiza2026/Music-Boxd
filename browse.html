@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Browse Albums · MusicBox</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles/shared.css">
+  <link rel="stylesheet" href="./styles/browse.css">
+</head>
+<body>
+  <nav>
+    <div class="nav-inner">
+      <a class="logo" href="index.html">Music<span>Box</span></a>
+
+      <ul class="nav-links">
+        <li><a href="browse.html" aria-current="page">Albums</a></li>
+        <li><a href="#">Members</a></li>
+        <li><a href="#">Journal</a></li>
+        <li><a href="#">Charts</a></li>
+      </ul>
+
+      <div class="nav-search">
+        <input type="text" placeholder="Search albums, artists…" />
+      </div>
+
+      <a href="login.html" class="btn btn-outline">Sign In</a>
+      <a href="login.html" class="btn btn-primary">Join</a>
+    </div>
+  </nav>
+
+  <section class="browse-hero">
+    <h1>Browse Albums</h1>
+    <p>Discover the latest trending records without loading everything at once.</p>
+  </section>
+
+  <main class="section browse-section">
+    <div class="section-head">
+      <h2>All Trending Albums</h2>
+      <span class="result-count" aria-live="polite">Loading...</span>
+    </div>
+
+    <div class="albums-grid" aria-live="polite"></div>
+
+    <div class="pagination" aria-label="Albums pagination">
+      <button class="btn btn-outline page-btn" data-action="prev">← Previous</button>
+      <span class="page-status" aria-live="polite">Page 1 of 1</span>
+      <button class="btn btn-outline page-btn" data-action="next">Next →</button>
+    </div>
+  </main>
+
+  <footer>
+    <p><strong>MusicBox</strong> · Track What You Hear · &copy; 2024</p>
+    <p style="margin-top:6px">About · Press · API · Jobs · Privacy · Terms</p>
+  </footer>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

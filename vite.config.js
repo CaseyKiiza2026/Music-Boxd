@@ -20,6 +20,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: fileURLToPath(new URL('./index.html', import.meta.url)),
+        browse: fileURLToPath(new URL('./browse.html', import.meta.url)),
         album: fileURLToPath(new URL('./album.html', import.meta.url)),
         login: fileURLToPath(new URL('./login.html', import.meta.url)),
         profile: fileURLToPath(new URL('./profile.html', import.meta.url)),
