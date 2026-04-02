@@ -50,7 +50,6 @@ function renderAlbumHero(album) {
       <p class="artist-line">by <a href="#">${album.artist}</a></p>
 
       <div class="rating-display">
-        <span class="stars-large">★★★★½</span>
         <span class="count">4.8 · 142,308 ratings</span>
       </div>
 
